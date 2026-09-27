@@ -2,8 +2,8 @@
   "name": "vscode-gtfs",
   "displayName": "GTFS Syntax Highlighting",
   "description": "Syntax highlighting for GTFS transit feed files (stops.txt, trips.txt, stop_times.txt, ...)",
-  "version": "0.0.1",
-  "publisher": "samlumley",
+  "version": "0.1.0",
+  "publisher": "smlum",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,6 +14,7 @@
   },
   "categories": ["Programming Languages"],
   "keywords": ["gtfs", "transit", "public transport", "schedule", "csv"],
+  "main": "./extension.js",
   "contributes": {
     "languages": [
       {

@@ -1,0 +1,1711 @@
+{
+  "$comment": "GTFS relational and field semantics, shared by the Python backend (core/schema.py) and any JavaScript/TypeScript consumer. Keyed by table, then by field. A table's \"presence\" says whether a feed must contain that file. A field's \"type\" names an entry in \"fieldTypes\", which carries what a value of that type must look like. GENERATED from schema/gtfs.yaml by scripts/build_schema_json.py - edit that, not this. Keys are camelCase so this reads naturally from TypeScript.",
+  "fieldTypes": {
+    "COLOR": {
+      "description": "A color encoded as a six-digit hexadecimal number. The leading \"#\" is not included.",
+      "pattern": "^[0-9A-Fa-f]{6}$"
+    },
+    "CURRENCY_AMOUNT": {
+      "description": "A decimal value indicating a currency amount."
+    },
+    "CURRENCY_CODE": {
+      "description": "An ISO 4217 alphabetical currency code.",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "DATE": {
+      "description": "Service day in the YYYYMMDD format. Since time within a service day may be above 24:00:00, a service day may contain information for the subsequent day(s).",
+      "pattern": "^\\d{8}$"
+    },
+    "EMAIL": {
+      "description": "An email address.",
+      "pattern": "^[^\\s@:]+@[^\\s@:]+$"
+    },
+    "FLOAT": {
+      "description": "A floating point number."
+    },
+    "ID": {
+      "description": "An internal ID, not intended to be shown to riders, and is a sequence of any UTF-8 characters. Using only printable ASCII characters is recommended."
+    },
+    "INTEGER": {
+      "description": "An integer.",
+      "pattern": "^[+-]?\\d+$"
+    },
+    "LANGUAGE_CODE": {
+      "description": "An IETF BCP 47 language code."
+    },
+    "LATITUDE": {
+      "description": "WGS84 latitude in decimal degrees. The value must be greater than or equal to -90.0 and less than or equal to 90.0.",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "LONGITUDE": {
+      "description": "WGS84 longitude in decimal degrees. The value must be greater than or equal to -180.0 and less than or equal to 180.0.",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "PHONE_NUMBER": {
+      "description": "A phone number."
+    },
+    "TEXT": {
+      "description": "A string of UTF-8 characters, which is aimed to be displayed and which must therefore be human readable."
+    },
+    "TIME": {
+      "description": "Time in the HH:MM:SS format (H:MM:SS is also accepted). For times occurring after midnight on the service day, enter the time as a value greater than 24:00:00.",
+      "pattern": "^\\d{1,2}:\\d{2}:\\d{2}$"
+    },
+    "TIMEZONE": {
+      "description": "TZ timezone from the IANA time-zones. Timezone names never contain the space character but may contain an underscore.",
+      "pattern": "^\\S+$"
+    },
+    "URL": {
+      "description": "A fully qualified URL that includes http:// or https://, and any special characters in the URL must be correctly escaped.",
+      "pattern": "^https?://"
+    }
+  },
+  "tables": {
+    "agency": {
+      "presence": "required",
+      "fields": {
+        "agency_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required when the feed contains more than one agency.",
+          "conditionScope": "feed",
+          "conditionCheck": {
+            "kind": "row_count",
+            "file": "agency",
+            "minimum": 2
+          },
+          "primaryKey": true
+        },
+        "agency_name": {
+          "type": "TEXT",
+          "required": "always"
+        },
+        "agency_url": {
+          "type": "URL",
+          "required": "always"
+        },
+        "agency_timezone": {
+          "type": "TIMEZONE",
+          "required": "always"
+        },
+        "agency_lang": {
+          "type": "LANGUAGE_CODE"
+        },
+        "agency_phone": {
+          "type": "PHONE_NUMBER"
+        },
+        "agency_fare_url": {
+          "type": "URL"
+        },
+        "agency_email": {
+          "type": "EMAIL"
+        },
+        "cemv_support": {
+          "type": "ENUM",
+          "values": {
+            "0": "No Information",
+            "1": "Supported",
+            "2": "Not Supported"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "No Information"
+          }
+        }
+      }
+    },
+    "areas": {
+      "presence": "optional",
+      "fields": {
+        "area_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "area_name": {
+          "type": "TEXT"
+        }
+      }
+    },
+    "attributions": {
+      "presence": "optional",
+      "fields": {
+        "attribution_id": {
+          "type": "ID",
+          "primaryKey": true
+        },
+        "agency_id": {
+          "type": "ID",
+          "references": {
+            "table": "agency",
+            "field": "agency_id"
+          }
+        },
+        "route_id": {
+          "type": "ID",
+          "references": {
+            "table": "routes",
+            "field": "route_id"
+          }
+        },
+        "trip_id": {
+          "type": "ID",
+          "references": {
+            "table": "trips",
+            "field": "trip_id"
+          }
+        },
+        "organization_name": {
+          "type": "TEXT",
+          "required": "always"
+        },
+        "is_producer": {
+          "type": "ENUM",
+          "values": {
+            "0": "Not Assigned",
+            "1": "Assigned"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Not Assigned"
+          }
+        },
+        "is_operator": {
+          "type": "ENUM",
+          "values": {
+            "0": "Not Assigned",
+            "1": "Assigned"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Not Assigned"
+          }
+        },
+        "is_authority": {
+          "type": "ENUM",
+          "values": {
+            "0": "Not Assigned",
+            "1": "Assigned"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Not Assigned"
+          }
+        },
+        "attribution_url": {
+          "type": "URL"
+        },
+        "attribution_email": {
+          "type": "EMAIL"
+        },
+        "attribution_phone": {
+          "type": "PHONE_NUMBER"
+        }
+      }
+    },
+    "booking_rules": {
+      "presence": "optional",
+      "fields": {
+        "booking_rule_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "booking_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Realtime",
+            "1": "Sameday",
+            "2": "Priorday"
+          }
+        },
+        "prior_notice_duration_min": {
+          "type": "INTEGER",
+          "required": "conditional",
+          "condition": "Required for booking_type=1 (same-day booking). Forbidden otherwise.",
+          "conditionScope": "row"
+        },
+        "prior_notice_duration_max": {
+          "type": "INTEGER"
+        },
+        "prior_notice_start_day": {
+          "type": "INTEGER"
+        },
+        "prior_notice_start_time": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required if prior_notice_start_day is defined. Forbidden otherwise.",
+          "conditionScope": "row"
+        },
+        "prior_notice_last_day": {
+          "type": "INTEGER",
+          "required": "conditional",
+          "condition": "Required for booking_type=2 (prior-day booking). Forbidden otherwise.",
+          "conditionScope": "row"
+        },
+        "prior_notice_last_time": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required if prior_notice_last_day is defined. Forbidden otherwise.",
+          "conditionScope": "row"
+        },
+        "prior_notice_service_id": {
+          "type": "TEXT"
+        },
+        "message": {
+          "type": "TEXT"
+        },
+        "pickup_message": {
+          "type": "TEXT"
+        },
+        "drop_off_message": {
+          "type": "TEXT"
+        },
+        "phone_number": {
+          "type": "PHONE_NUMBER"
+        },
+        "info_url": {
+          "type": "URL"
+        },
+        "booking_url": {
+          "type": "URL"
+        }
+      }
+    },
+    "calendar": {
+      "presence": "conditional",
+      "condition": "Required unless all dates of service are defined in calendar_dates.txt. Optional otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "file_absent",
+        "file": "calendar_dates"
+      },
+      "fields": {
+        "service_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "monday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "tuesday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "wednesday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "thursday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "friday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "saturday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "sunday": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Available",
+            "1": "Available"
+          }
+        },
+        "start_date": {
+          "type": "DATE",
+          "required": "always"
+        },
+        "end_date": {
+          "type": "DATE",
+          "required": "always"
+        }
+      }
+    },
+    "calendar_dates": {
+      "presence": "conditional",
+      "condition": "Required if calendar.txt is omitted, in which case it must contain all dates of service. Optional otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "file_absent",
+        "file": "calendar"
+      },
+      "fields": {
+        "service_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "calendar",
+            "field": "service_id"
+          }
+        },
+        "date": {
+          "type": "DATE",
+          "required": "always",
+          "primaryKey": true
+        },
+        "exception_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "1": "Service Added",
+            "2": "Service Removed"
+          }
+        }
+      }
+    },
+    "fare_attributes": {
+      "presence": "optional",
+      "fields": {
+        "fare_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "price": {
+          "type": "CURRENCY_AMOUNT",
+          "required": "always"
+        },
+        "currency_type": {
+          "type": "CURRENCY_CODE",
+          "required": "always"
+        },
+        "payment_method": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "On Board",
+            "1": "Before Boarding"
+          }
+        },
+        "transfers": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "No Transfer",
+            "1": "One Transfer",
+            "2": "Two Transfers"
+          },
+          "whenEmpty": {
+            "label": "Unlimited transfers are permitted."
+          }
+        },
+        "agency_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required when the feed contains more than one agency.",
+          "conditionScope": "feed",
+          "conditionCheck": {
+            "kind": "row_count",
+            "file": "agency",
+            "minimum": 2
+          },
+          "references": {
+            "table": "agency",
+            "field": "agency_id"
+          }
+        },
+        "transfer_duration": {
+          "type": "INTEGER"
+        }
+      }
+    },
+    "fare_leg_join_rules": {
+      "presence": "optional",
+      "fields": {
+        "from_network_id": {
+          "type": "ID",
+          "required": "always"
+        },
+        "to_network_id": {
+          "type": "ID",
+          "required": "always"
+        },
+        "from_stop_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required if to_stop_id is defined.",
+          "conditionScope": "row",
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "to_stop_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required if from_stop_id is defined.",
+          "conditionScope": "row",
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        }
+      }
+    },
+    "fare_leg_rules": {
+      "presence": "optional",
+      "fields": {
+        "leg_group_id": {
+          "type": "ID"
+        },
+        "network_id": {
+          "type": "ID",
+          "primaryKey": true
+        },
+        "from_area_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "areas",
+            "field": "area_id"
+          }
+        },
+        "to_area_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "areas",
+            "field": "area_id"
+          }
+        },
+        "from_timeframe_group_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "timeframes",
+            "field": "timeframe_group_id"
+          }
+        },
+        "to_timeframe_group_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "timeframes",
+            "field": "timeframe_group_id"
+          }
+        },
+        "fare_product_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "fare_products",
+            "field": "fare_product_id"
+          }
+        },
+        "rule_priority": {
+          "type": "INTEGER"
+        }
+      }
+    },
+    "fare_media": {
+      "presence": "optional",
+      "fields": {
+        "fare_media_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "fare_media_name": {
+          "type": "TEXT"
+        },
+        "fare_media_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "None",
+            "1": "Paper Ticket",
+            "2": "Transit Card",
+            "3": "Contactless Emv",
+            "4": "Mobile App"
+          }
+        }
+      }
+    },
+    "fare_products": {
+      "presence": "optional",
+      "fields": {
+        "fare_product_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "fare_product_name": {
+          "type": "TEXT"
+        },
+        "amount": {
+          "type": "CURRENCY_AMOUNT",
+          "required": "always"
+        },
+        "currency": {
+          "type": "CURRENCY_CODE",
+          "required": "always"
+        },
+        "fare_media_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "fare_media",
+            "field": "fare_media_id"
+          }
+        },
+        "rider_category_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "rider_categories",
+            "field": "rider_category_id"
+          }
+        }
+      }
+    },
+    "fare_rules": {
+      "presence": "optional",
+      "fields": {
+        "fare_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "fare_attributes",
+            "field": "fare_id"
+          }
+        },
+        "route_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "routes",
+            "field": "route_id"
+          }
+        },
+        "origin_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "stops",
+            "field": "zone_id"
+          }
+        },
+        "destination_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "stops",
+            "field": "zone_id"
+          }
+        },
+        "contains_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "stops",
+            "field": "zone_id"
+          }
+        }
+      }
+    },
+    "fare_transfer_rules": {
+      "presence": "optional",
+      "fields": {
+        "from_leg_group_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "fare_leg_rules",
+            "field": "leg_group_id"
+          }
+        },
+        "to_leg_group_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "fare_leg_rules",
+            "field": "leg_group_id"
+          }
+        },
+        "duration_limit": {
+          "type": "INTEGER",
+          "primaryKey": true
+        },
+        "duration_limit_type": {
+          "type": "ENUM",
+          "required": "conditional",
+          "condition": "Required if duration_limit is defined. Forbidden if duration_limit is empty.",
+          "conditionScope": "row",
+          "values": {
+            "0": "Departure To Arrival",
+            "1": "Departure To Departure",
+            "2": "Arrival To Departure",
+            "3": "Arrival To Arrival"
+          }
+        },
+        "fare_transfer_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "A Plus Ab",
+            "1": "A Plus Ab Plus B",
+            "2": "Ab"
+          }
+        },
+        "transfer_count": {
+          "type": "INTEGER",
+          "primaryKey": true
+        },
+        "fare_product_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "fare_products",
+            "field": "fare_product_id"
+          }
+        }
+      }
+    },
+    "feed_info": {
+      "presence": "conditional",
+      "condition": "Required if translations.txt is provided. Recommended otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "file_present",
+        "file": "translations"
+      },
+      "fields": {
+        "feed_publisher_name": {
+          "type": "TEXT",
+          "required": "always"
+        },
+        "feed_publisher_url": {
+          "type": "URL",
+          "required": "always"
+        },
+        "feed_lang": {
+          "type": "LANGUAGE_CODE",
+          "required": "always"
+        },
+        "default_lang": {
+          "type": "LANGUAGE_CODE"
+        },
+        "feed_start_date": {
+          "type": "DATE"
+        },
+        "feed_end_date": {
+          "type": "DATE"
+        },
+        "feed_version": {
+          "type": "TEXT"
+        },
+        "feed_contact_email": {
+          "type": "EMAIL"
+        },
+        "feed_contact_url": {
+          "type": "URL"
+        }
+      }
+    },
+    "frequencies": {
+      "presence": "optional",
+      "fields": {
+        "trip_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "trips",
+            "field": "trip_id"
+          }
+        },
+        "start_time": {
+          "type": "TIME",
+          "required": "always",
+          "primaryKey": true
+        },
+        "end_time": {
+          "type": "TIME",
+          "required": "always"
+        },
+        "headway_secs": {
+          "type": "INTEGER",
+          "required": "always"
+        },
+        "exact_times": {
+          "type": "ENUM",
+          "values": {
+            "0": "Frequency Based",
+            "1": "Schedule Based"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Frequency Based"
+          }
+        }
+      }
+    },
+    "levels": {
+      "presence": "conditional",
+      "condition": "Required when describing pathways with elevators (pathway_mode=5). Optional otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "rows_match",
+        "file": "pathways",
+        "column": "pathway_mode",
+        "equals": "5"
+      },
+      "fields": {
+        "level_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "level_index": {
+          "type": "FLOAT",
+          "required": "always"
+        },
+        "level_name": {
+          "type": "TEXT"
+        }
+      }
+    },
+    "location_group_stops": {
+      "presence": "optional",
+      "fields": {
+        "location_group_id": {
+          "type": "ID",
+          "required": "always"
+        },
+        "stop_id": {
+          "type": "ID",
+          "required": "always"
+        }
+      }
+    },
+    "location_groups": {
+      "presence": "optional",
+      "fields": {
+        "location_group_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "location_group_name": {
+          "type": "TEXT"
+        }
+      }
+    },
+    "locations": {
+      "presence": "optional",
+      "fields": {
+        "id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "stop_name": {
+          "type": "TEXT"
+        },
+        "stop_desc": {
+          "type": "TEXT"
+        },
+        "geometry_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "Polygon": "Polygon",
+            "MultiPolygon": "MultiPolygon"
+          }
+        },
+        "geometry": {
+          "type": "TEXT",
+          "required": "always"
+        }
+      }
+    },
+    "networks": {
+      "presence": "conditionally_forbidden",
+      "condition": "Forbidden if network_id exists in routes.txt. Optional otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "column_present",
+        "file": "routes",
+        "column": "network_id"
+      },
+      "fields": {
+        "network_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "network_name": {
+          "type": "TEXT"
+        }
+      }
+    },
+    "pathways": {
+      "presence": "optional",
+      "fields": {
+        "pathway_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "from_stop_id": {
+          "type": "ID",
+          "required": "always",
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "to_stop_id": {
+          "type": "ID",
+          "required": "always",
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "pathway_mode": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "1": "Walkway",
+            "2": "Stairs",
+            "3": "Moving Sidewalk",
+            "4": "Escalator",
+            "5": "Elevator",
+            "6": "Fare Gate",
+            "7": "Exit Gate"
+          }
+        },
+        "is_bidirectional": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Unidirectional",
+            "1": "Bidirectional"
+          }
+        },
+        "length": {
+          "type": "FLOAT"
+        },
+        "traversal_time": {
+          "type": "INTEGER"
+        },
+        "stair_count": {
+          "type": "INTEGER"
+        },
+        "max_slope": {
+          "type": "FLOAT"
+        },
+        "min_width": {
+          "type": "FLOAT"
+        },
+        "signposted_as": {
+          "type": "TEXT"
+        },
+        "reversed_signposted_as": {
+          "type": "TEXT"
+        }
+      }
+    },
+    "rider_categories": {
+      "presence": "optional",
+      "fields": {
+        "rider_category_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "rider_category_name": {
+          "type": "TEXT",
+          "required": "always"
+        },
+        "is_default_fare_category": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Not Default",
+            "1": "Is Default"
+          }
+        },
+        "eligibility_url": {
+          "type": "URL"
+        }
+      }
+    },
+    "route_networks": {
+      "presence": "conditionally_forbidden",
+      "condition": "Forbidden if network_id exists in routes.txt. Optional otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "column_present",
+        "file": "routes",
+        "column": "network_id"
+      },
+      "fields": {
+        "route_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "routes",
+            "field": "route_id"
+          }
+        },
+        "network_id": {
+          "type": "ID",
+          "required": "always",
+          "references": {
+            "table": "networks",
+            "field": "network_id"
+          }
+        }
+      }
+    },
+    "routes": {
+      "presence": "required",
+      "fields": {
+        "route_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "agency_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required when the feed contains more than one agency.",
+          "conditionScope": "feed",
+          "conditionCheck": {
+            "kind": "row_count",
+            "file": "agency",
+            "minimum": 2
+          },
+          "references": {
+            "table": "agency",
+            "field": "agency_id"
+          }
+        },
+        "route_short_name": {
+          "type": "TEXT",
+          "required": "conditional",
+          "condition": "Required if route_long_name is empty.",
+          "conditionScope": "row"
+        },
+        "route_long_name": {
+          "type": "TEXT",
+          "required": "conditional",
+          "condition": "Required if route_short_name is empty.",
+          "conditionScope": "row"
+        },
+        "route_desc": {
+          "type": "TEXT"
+        },
+        "route_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Light Rail",
+            "1": "Subway",
+            "2": "Rail",
+            "3": "Bus",
+            "4": "Ferry",
+            "5": "Cable Tram",
+            "6": "Aerial Lift",
+            "7": "Funicular",
+            "11": "Trolleybus",
+            "12": "Monorail"
+          }
+        },
+        "route_url": {
+          "type": "URL"
+        },
+        "route_color": {
+          "type": "COLOR"
+        },
+        "route_text_color": {
+          "type": "COLOR"
+        },
+        "route_sort_order": {
+          "type": "INTEGER"
+        },
+        "continuous_pickup": {
+          "type": "ENUM",
+          "values": {
+            "0": "Allowed",
+            "1": "Not Available",
+            "2": "Must Phone",
+            "3": "On Request To Driver"
+          },
+          "whenEmpty": {
+            "code": "1",
+            "label": "Not Available"
+          }
+        },
+        "continuous_drop_off": {
+          "type": "ENUM",
+          "values": {
+            "0": "Allowed",
+            "1": "Not Available",
+            "2": "Must Phone",
+            "3": "On Request To Driver"
+          },
+          "whenEmpty": {
+            "code": "1",
+            "label": "Not Available"
+          }
+        },
+        "network_id": {
+          "type": "ID"
+        },
+        "cemv_support": {
+          "type": "ENUM",
+          "values": {
+            "0": "No Information",
+            "1": "Supported",
+            "2": "Not Supported"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "No Information"
+          }
+        }
+      }
+    },
+    "shapes": {
+      "presence": "optional",
+      "fields": {
+        "shape_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "shape_pt_lat": {
+          "type": "LATITUDE",
+          "required": "always"
+        },
+        "shape_pt_lon": {
+          "type": "LONGITUDE",
+          "required": "always"
+        },
+        "shape_pt_sequence": {
+          "type": "INTEGER",
+          "required": "always",
+          "primaryKey": true
+        },
+        "shape_dist_traveled": {
+          "type": "FLOAT"
+        }
+      }
+    },
+    "stop_areas": {
+      "presence": "optional",
+      "fields": {
+        "area_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "areas",
+            "field": "area_id"
+          }
+        },
+        "stop_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        }
+      }
+    },
+    "stop_times": {
+      "presence": "required",
+      "fields": {
+        "trip_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true,
+          "references": {
+            "table": "trips",
+            "field": "trip_id"
+          }
+        },
+        "arrival_time": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required for the first and last stop of a trip, and if timepoint=1.",
+          "conditionScope": "row_context"
+        },
+        "departure_time": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required for the first and last stop of a trip, and if timepoint=1.",
+          "conditionScope": "row_context"
+        },
+        "stop_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required if location_group_id and location_id are empty. Forbidden if location_group_id or location_id are defined.",
+          "conditionScope": "row",
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "location_group_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Forbidden if stop_id or location_group_id are defined.",
+          "conditionScope": "row",
+          "references": {
+            "table": "location_groups",
+            "field": "location_group_id"
+          }
+        },
+        "location_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Forbidden if stop_id or location_group_id are defined.",
+          "conditionScope": "row",
+          "references": {
+            "table": "locations",
+            "field": "id"
+          }
+        },
+        "stop_sequence": {
+          "type": "INTEGER",
+          "required": "always",
+          "primaryKey": true
+        },
+        "stop_headsign": {
+          "type": "TEXT"
+        },
+        "start_pickup_drop_off_window": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required if location_group_id or location_id is defined. Forbidden if arrival_time or departure_time is defined.",
+          "conditionScope": "row"
+        },
+        "end_pickup_drop_off_window": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required if location_group_id or location_id is defined. Forbidden if arrival_time or departure_time is defined.",
+          "conditionScope": "row"
+        },
+        "pickup_type": {
+          "type": "ENUM",
+          "values": {
+            "0": "Regular",
+            "1": "Not Available",
+            "2": "Must Phone",
+            "3": "On Request To Driver"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Regular"
+          }
+        },
+        "drop_off_type": {
+          "type": "ENUM",
+          "values": {
+            "0": "Regular",
+            "1": "Not Available",
+            "2": "Must Phone",
+            "3": "On Request To Driver"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Regular"
+          }
+        },
+        "continuous_pickup": {
+          "type": "ENUM",
+          "values": {
+            "0": "Allowed",
+            "1": "Not Available",
+            "2": "Must Phone",
+            "3": "On Request To Driver"
+          },
+          "whenEmpty": {
+            "code": "1",
+            "label": "Not Available"
+          }
+        },
+        "continuous_drop_off": {
+          "type": "ENUM",
+          "values": {
+            "0": "Allowed",
+            "1": "Not Available",
+            "2": "Must Phone",
+            "3": "On Request To Driver"
+          },
+          "whenEmpty": {
+            "code": "1",
+            "label": "Not Available"
+          }
+        },
+        "shape_dist_traveled": {
+          "type": "FLOAT"
+        },
+        "timepoint": {
+          "type": "ENUM",
+          "values": {
+            "0": "Approximate",
+            "1": "Exact"
+          },
+          "whenEmpty": {
+            "code": "1",
+            "label": "Exact"
+          }
+        },
+        "pickup_booking_rule_id": {
+          "type": "ID",
+          "references": {
+            "table": "booking_rules",
+            "field": "booking_rule_id"
+          }
+        },
+        "drop_off_booking_rule_id": {
+          "type": "ID",
+          "references": {
+            "table": "booking_rules",
+            "field": "booking_rule_id"
+          }
+        }
+      }
+    },
+    "stops": {
+      "presence": "conditional",
+      "condition": "Optional if demand-responsive zones are defined in locations.geojson. Required otherwise.",
+      "conditionScope": "feed",
+      "conditionCheck": {
+        "kind": "file_absent",
+        "file": "locations"
+      },
+      "fields": {
+        "stop_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "stop_code": {
+          "type": "TEXT"
+        },
+        "stop_name": {
+          "type": "TEXT",
+          "required": "conditional",
+          "condition": "Required for location_type 0 (stop), 1 (station) and 2 (entrance/exit). Optional for 3 (generic node) and 4 (boarding area).",
+          "conditionScope": "row"
+        },
+        "tts_stop_name": {
+          "type": "TEXT"
+        },
+        "stop_desc": {
+          "type": "TEXT"
+        },
+        "stop_lat": {
+          "type": "LATITUDE",
+          "required": "conditional",
+          "condition": "Required for location_type 0 (stop), 1 (station) and 2 (entrance/exit). Optional for 3 (generic node) and 4 (boarding area).",
+          "conditionScope": "row"
+        },
+        "stop_lon": {
+          "type": "LONGITUDE",
+          "required": "conditional",
+          "condition": "Required for location_type 0 (stop), 1 (station) and 2 (entrance/exit). Optional for 3 (generic node) and 4 (boarding area).",
+          "conditionScope": "row"
+        },
+        "zone_id": {
+          "type": "ID"
+        },
+        "stop_url": {
+          "type": "URL"
+        },
+        "location_type": {
+          "type": "ENUM",
+          "values": {
+            "0": "Stop",
+            "1": "Station",
+            "2": "Entrance",
+            "3": "Generic Node",
+            "4": "Boarding Area"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Stop"
+          }
+        },
+        "parent_station": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required for location_type 2 (entrance/exit), 3 (generic node) and 4 (boarding area). Forbidden for location_type 1: a station is itself the parent.",
+          "conditionScope": "row",
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "stop_timezone": {
+          "type": "TIMEZONE"
+        },
+        "wheelchair_boarding": {
+          "type": "ENUM",
+          "values": {
+            "0": "Unknown",
+            "1": "Accessible",
+            "2": "Inaccessible"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Unknown"
+          }
+        },
+        "level_id": {
+          "type": "ID",
+          "references": {
+            "table": "levels",
+            "field": "level_id"
+          }
+        },
+        "platform_code": {
+          "type": "TEXT"
+        },
+        "stop_access": {
+          "type": "ENUM",
+          "values": {
+            "0": "Accessible Via Pathways",
+            "1": "Not Accessible Via Pathways"
+          }
+        }
+      }
+    },
+    "timeframes": {
+      "presence": "optional",
+      "fields": {
+        "timeframe_group_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "start_time": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required if end_time is defined.",
+          "conditionScope": "row",
+          "primaryKey": true
+        },
+        "end_time": {
+          "type": "TIME",
+          "required": "conditional",
+          "condition": "Required if start_time is defined.",
+          "conditionScope": "row",
+          "primaryKey": true
+        },
+        "service_id": {
+          "type": "TEXT",
+          "required": "always",
+          "primaryKey": true
+        }
+      }
+    },
+    "transfers": {
+      "presence": "optional",
+      "fields": {
+        "from_stop_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required unless transfer_type is 4 or 5, which identify the transfer by trip.",
+          "conditionScope": "row",
+          "primaryKey": true,
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "to_stop_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required unless transfer_type is 4 or 5, which identify the transfer by trip.",
+          "conditionScope": "row",
+          "primaryKey": true,
+          "references": {
+            "table": "stops",
+            "field": "stop_id"
+          }
+        },
+        "transfer_type": {
+          "type": "ENUM",
+          "required": "always",
+          "values": {
+            "0": "Recommended",
+            "1": "Timed",
+            "2": "Minimum Time",
+            "3": "Impossible",
+            "4": "In Seat Transfer Allowed",
+            "5": "In Seat Transfer Not Allowed"
+          }
+        },
+        "min_transfer_time": {
+          "type": "INTEGER",
+          "required": "conditional",
+          "condition": "Required if transfer_type=2 (a minimum time is needed).",
+          "conditionScope": "row"
+        },
+        "from_trip_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required if transfer_type is 4 or 5 (in-seat transfers).",
+          "conditionScope": "row",
+          "primaryKey": true,
+          "references": {
+            "table": "trips",
+            "field": "trip_id"
+          }
+        },
+        "to_trip_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required if transfer_type is 4 or 5 (in-seat transfers).",
+          "conditionScope": "row",
+          "primaryKey": true,
+          "references": {
+            "table": "trips",
+            "field": "trip_id"
+          }
+        },
+        "from_route_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "routes",
+            "field": "route_id"
+          }
+        },
+        "to_route_id": {
+          "type": "ID",
+          "primaryKey": true,
+          "references": {
+            "table": "routes",
+            "field": "route_id"
+          }
+        }
+      }
+    },
+    "translations": {
+      "presence": "optional",
+      "fields": {
+        "table_name": {
+          "type": "TEXT",
+          "required": "always",
+          "primaryKey": true
+        },
+        "field_name": {
+          "type": "TEXT",
+          "required": "always",
+          "primaryKey": true
+        },
+        "language": {
+          "type": "LANGUAGE_CODE",
+          "required": "always",
+          "primaryKey": true
+        },
+        "translation": {
+          "type": "TEXT",
+          "required": "always"
+        },
+        "record_id": {
+          "type": "TEXT",
+          "required": "conditional",
+          "condition": "Required if field_value is empty.",
+          "conditionScope": "row",
+          "primaryKey": true
+        },
+        "record_sub_id": {
+          "type": "TEXT",
+          "required": "conditional",
+          "condition": "Required if table_name is stop_times and record_id is defined.",
+          "conditionScope": "row",
+          "primaryKey": true
+        },
+        "field_value": {
+          "type": "TEXT",
+          "required": "conditional",
+          "condition": "Required if record_id is empty.",
+          "conditionScope": "row",
+          "primaryKey": true
+        }
+      }
+    },
+    "trips": {
+      "presence": "required",
+      "fields": {
+        "trip_id": {
+          "type": "ID",
+          "required": "always",
+          "primaryKey": true
+        },
+        "route_id": {
+          "type": "ID",
+          "required": "always",
+          "references": {
+            "table": "routes",
+            "field": "route_id"
+          }
+        },
+        "service_id": {
+          "type": "ID",
+          "required": "always",
+          "references": {
+            "table": "calendar",
+            "field": "service_id"
+          }
+        },
+        "trip_headsign": {
+          "type": "TEXT"
+        },
+        "trip_short_name": {
+          "type": "TEXT"
+        },
+        "direction_id": {
+          "type": "ENUM",
+          "values": {
+            "0": "Outbound",
+            "1": "Inbound"
+          }
+        },
+        "block_id": {
+          "type": "ID"
+        },
+        "shape_id": {
+          "type": "ID",
+          "required": "conditional",
+          "condition": "Required if the trip has continuous pickup or drop-off behaviour defined.",
+          "conditionScope": "row_context",
+          "references": {
+            "table": "shapes",
+            "field": "shape_id"
+          }
+        },
+        "wheelchair_accessible": {
+          "type": "ENUM",
+          "values": {
+            "0": "Unknown",
+            "1": "Accessible",
+            "2": "Inaccessible"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Unknown"
+          }
+        },
+        "bikes_allowed": {
+          "type": "ENUM",
+          "values": {
+            "0": "Unknown",
+            "1": "Allowed",
+            "2": "Not Allowed"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "Unknown"
+          }
+        },
+        "cars_allowed": {
+          "type": "ENUM",
+          "values": {
+            "0": "No Information",
+            "1": "Allowed",
+            "2": "Not Allowed"
+          },
+          "whenEmpty": {
+            "code": "0",
+            "label": "No Information"
+          }
+        },
+        "safe_duration_factor": {
+          "type": "FLOAT"
+        },
+        "safe_duration_offset": {
+          "type": "FLOAT"
+        }
+      }
+    }
+  },
+  "enumLikeColumns": [
+    "bikes_allowed",
+    "booking_type",
+    "cars_allowed",
+    "cemv_support",
+    "continuous_drop_off",
+    "continuous_pickup",
+    "direction_id",
+    "drop_off_type",
+    "duration_limit_type",
+    "exact_times",
+    "exception_type",
+    "fare_media_type",
+    "fare_transfer_type",
+    "friday",
+    "geometry_type",
+    "is_authority",
+    "is_bidirectional",
+    "is_default_fare_category",
+    "is_operator",
+    "is_producer",
+    "location_type",
+    "monday",
+    "pathway_mode",
+    "payment_method",
+    "pickup_type",
+    "route_type",
+    "saturday",
+    "stop_access",
+    "sunday",
+    "thursday",
+    "timepoint",
+    "transfer_type",
+    "transfers",
+    "tuesday",
+    "wednesday",
+    "wheelchair_accessible",
+    "wheelchair_boarding"
+  ]
+}

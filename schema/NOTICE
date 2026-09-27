@@ -1,0 +1,8 @@
+gtfs-schema.json is a copy of MobilityData's machine-readable GTFS schema from gtfs-garage:
+https://github.com/MobilityData/gtfs-garage/blob/94955e658d86be92337812c05749a77eab61298b/src/gtfs_garage/data/gtfs-schema.json
+
+Copyright MobilityData. Licensed under the Apache License, Version 2.0:
+https://www.apache.org/licenses/LICENSE-2.0
+
+It is not the GTFS specification itself; where they differ,
+https://gtfs.org/documentation/schedule/reference/ is authoritative.

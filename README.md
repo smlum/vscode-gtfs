@@ -7,6 +7,7 @@ Syntax highlighting for [GTFS](https://gtfs.org/documentation/schedule/reference
 - **Rainbow columns** - each column in a GTFS file gets its own colour, so wide files like `stops.txt` and `stop_times.txt` are easy to read.
 - Works automatically on standard GTFS file names (`agency.txt`, `stops.txt`, `routes.txt`, `trips.txt`, `stop_times.txt`, `calendar.txt`, `calendar_dates.txt`, `shapes.txt`, and the rest of the spec).
 - Colours come from your current theme.
+- **Hover for meaning** - hover a cell to see its column's type and whether it's required. For coded columns you also see the label, e.g. `route_type` `3` → **Bus**, and a blank `location_type` → **Stop** (default). Hover a header to list all codes for that column.
 
 ## Notes
 
@@ -15,7 +16,10 @@ Syntax highlighting for [GTFS](https://gtfs.org/documentation/schedule/reference
 
 ## Roadmap
 
-- Hover a code (e.g. `route_type` `3`) to see its meaning
 - Jump from an ID (e.g. `stop_id` in `stop_times.txt`) to its row in the referenced file
+
+## Credits
+
+Hover information comes from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE)). It isn't the specification itself; for the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
 
 Inspired by [Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv).
