@@ -8,10 +8,12 @@ An unaffiliated community-built extension 🚌
 
 ## Features
 
-- **Rainbow columns** - each column in a GTFS file gets its own colour, so wide files like `stops.txt` and `stop_times.txt` are easy to read.
-- Works automatically on standard GTFS file names (`agency.txt`, `stops.txt`, `routes.txt`, `trips.txt`, `stop_times.txt`, `calendar.txt`, `calendar_dates.txt`, `shapes.txt`, and the rest of the spec).
+- Rainbow columns - each column in a GTFS file gets its own colour, making files like `stops.txt` easier to read.
+- Works automatically on standard GTFS file names (`agency.txt`, `stops.txt`, ...).
 - Colours come from your current theme.
-- **Hover for meaning** - hover a cell to see its column's type and whether it's required. For coded columns you also see the label, e.g. `route_type` `3` → **Bus**, and a blank `location_type` → **Stop** (default). Hover a header to list all codes for that column.
+- Hover a cell to see its column's type, whether it's required, and its label, e.g. `route_type` `3` → **Bus**.
+- Hover a header to list all codes for that column.
+- Light checks for common mistakes, like unknown codes or badly formatted times. For full validation, use [MobilityData's GTFS Validator](https://gtfs-validator.mobilitydata.org/).
 
 ## Notes
 
@@ -21,10 +23,9 @@ An unaffiliated community-built extension 🚌
 ## Roadmap
 
 - Jump from an ID (e.g. `stop_id` in `stop_times.txt`) to its row in the referenced file
-- Light editor checks: flag unknown codes, badly formatted values (times, dates, colours) and missing required values. For full feed validation, use [MobilityData's GTFS Validator](https://gtfs-validator.mobilitydata.org/).
 
 ## Credits
 
-Hover information comes from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE)). It isn't the specification itself. For the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
+Hover information and checks come from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE)). It isn't the specification itself. For the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
 
 Inspired by [Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv).

@@ -1,0 +1,6 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_color,internal_note
+R1,DT,1,Central - Park,3,E31837,ok
+R2,DT,2,Central - Harbour,700,0077C8,extended route type
+R3,DT,3,Harbour Loop,3,#FF0000,colour has a #
+R4,DT,4,Night Bus,,000000,blank route_type
+R5,DT,5,Short Row,3

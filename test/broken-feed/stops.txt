@@ -1,0 +1,5 @@
+stop_id,stop_name,stop_lat,stop_lon,location_type
+S1,Good Stop,43.6532,-79.3832,0
+S2,Latitude Too Big,95.0,-79.3832,0
+S3,Not A Number,43.6532,abc,0
+S4,Unknown Location Type,43.6532,-79.3832,9
