@@ -1,6 +1,10 @@
-# GTFS Syntax Highlighting
+# GTFS
 
-Syntax highlighting for [GTFS](https://gtfs.org/documentation/schedule/reference/) transit feed files in VS Code.
+Language support for [GTFS](https://gtfs.org/documentation/schedule/reference/) transit feed files in VS Code: rainbow columns, plus hovers that explain each column and code.
+
+An unaffiliated community-built extension 🚌
+
+![Rainbow columns and a route_type hover in routes.txt](images/hover.png)
 
 ## Features
 
@@ -11,15 +15,16 @@ Syntax highlighting for [GTFS](https://gtfs.org/documentation/schedule/reference
 
 ## Notes
 
-- Very large files (e.g. a 200 MB `stop_times.txt`) may open with highlighting disabled - that's a VS Code limit for big files.
-- Highlighting applies to files by name, so any file called e.g. `stops.txt` is treated as GTFS. To turn it off for a file, pick another language from the status bar.
+- Large files (e.g. a 200 MB `stop_times.txt`) may open with highlighting disabled - a limit set by VS Code for big files.
+- Highlighting applies to files by name, so any file called e.g. `stops.txt` is treated as GTFS.
 
 ## Roadmap
 
 - Jump from an ID (e.g. `stop_id` in `stop_times.txt`) to its row in the referenced file
+- Light editor checks: flag unknown codes, badly formatted values (times, dates, colours) and missing required values. For full feed validation, use [MobilityData's GTFS Validator](https://gtfs-validator.mobilitydata.org/).
 
 ## Credits
 
-Hover information comes from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE)). It isn't the specification itself; for the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
+Hover information comes from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE)). It isn't the specification itself. For the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
 
 Inspired by [Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv).

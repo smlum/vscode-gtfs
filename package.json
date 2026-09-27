@@ -1,7 +1,7 @@
 {
   "name": "vscode-gtfs",
-  "displayName": "GTFS Syntax Highlighting",
-  "description": "Syntax highlighting for GTFS transit feed files (stops.txt, trips.txt, stop_times.txt, ...)",
+  "displayName": "GTFS",
+  "description": "Read GTFS transit feeds in VS Code: rainbow columns, hovers that explain columns and codes, e.g. route_type 3 → Bus.",
   "version": "0.1.0",
   "publisher": "smlum",
   "license": "MIT",
