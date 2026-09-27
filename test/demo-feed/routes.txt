@@ -1,0 +1,3 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color
+R1,DT,1,Central - Park,3,E31837,FFFFFF
+R2,DT,2,"Central - Harbour, via Main",3,0077C8,FFFFFF

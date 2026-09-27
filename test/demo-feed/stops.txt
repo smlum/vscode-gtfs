@@ -1,0 +1,6 @@
+stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,wheelchair_boarding
+STN1,,Central Station,,43.6532,-79.3832,A,,1,,1
+0001,1001,"Central Station, Platform 1",,43.6533,-79.3831,A,,0,STN1,1
+0002,1002,"Main St & 1st Ave",Near the ""big"" clock,43.6600,-79.3900,A,,0,,0
+0003,1003,Park Rd,,43.6700,-79.4000,B,,0,,2
+0004,1004,"Harbour Terminal, Bay 3",,43.6400,-79.3700,B,,0,,1

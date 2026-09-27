@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "GTFS",
+  "scopeName": "text.gtfs",
+  "comment": "Rainbow columns: each match colours up to 8 comma-separated fields, then the next match continues from field 9 with colour 1 again. A field is either quoted (may contain commas and doubled \"\" quotes) or plain. Scopes reuse common theme scopes so colours come from the user's theme.",
+  "patterns": [
+    {
+      "match": "((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?((?:\"(?:[^\"]|\"\")*\"|[^,]*)(?:,|$))?",
+      "captures": {
+        "1": { "name": "keyword.column1.gtfs" },
+        "2": { "name": "string.column2.gtfs" },
+        "3": { "name": "entity.name.function.column3.gtfs" },
+        "4": { "name": "constant.numeric.column4.gtfs" },
+        "5": { "name": "variable.parameter.column5.gtfs" },
+        "6": { "name": "entity.name.type.column6.gtfs" },
+        "7": { "name": "support.function.column7.gtfs" },
+        "8": { "name": "constant.language.column8.gtfs" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+This file is not a GTFS filename, so it should stay Plain Text (a negative test).

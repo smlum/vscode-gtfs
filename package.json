@@ -1,0 +1,43 @@
+{
+  "name": "vscode-gtfs",
+  "displayName": "GTFS Syntax Highlighting",
+  "description": "Syntax highlighting for GTFS transit feed files (stops.txt, trips.txt, stop_times.txt, ...)",
+  "version": "0.0.1",
+  "publisher": "samlumley",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smlum/vscode-gtfs.git"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Programming Languages"],
+  "keywords": ["gtfs", "transit", "public transport", "schedule", "csv"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "gtfs",
+        "aliases": ["GTFS", "gtfs"],
+        "filenames": [
+          "agency.txt", "stops.txt", "routes.txt", "trips.txt", "stop_times.txt",
+          "calendar.txt", "calendar_dates.txt", "shapes.txt", "frequencies.txt", "transfers.txt",
+          "pathways.txt", "levels.txt", "feed_info.txt", "translations.txt", "attributions.txt",
+          "fare_attributes.txt", "fare_rules.txt", "fare_media.txt", "fare_products.txt",
+          "fare_leg_rules.txt", "fare_leg_join_rules.txt", "fare_transfer_rules.txt",
+          "rider_categories.txt", "timeframes.txt", "areas.txt", "stop_areas.txt",
+          "networks.txt", "route_networks.txt", "location_groups.txt",
+          "location_group_stops.txt", "booking_rules.txt"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "gtfs",
+        "scopeName": "text.gtfs",
+        "path": "./syntaxes/gtfs.tmLanguage.json"
+      }
+    ]
+  }
+}
