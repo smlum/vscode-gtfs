@@ -20,12 +20,16 @@ An unaffiliated community-built extension 🚌
 - Large files (e.g. a 200 MB `stop_times.txt`) may open with highlighting disabled - a limit set by VS Code for big files.
 - Highlighting applies to files by name, so any file called e.g. `stops.txt` is treated as GTFS.
 
+## Privacy
+
+The extension works entirely offline: it makes no network requests and collects no data.
+
 ## Roadmap
 
 - Jump from an ID (e.g. `stop_id` in `stop_times.txt`) to its row in the referenced file
 
 ## Credits
 
-Hover information and checks come from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE)). It isn't the specification itself. For the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
+Hover information and checks come from a bundled copy of [MobilityData's machine-readable GTFS schema](https://github.com/MobilityData/gtfs-garage) (Apache-2.0, see [schema/NOTICE](schema/NOTICE) and [schema/LICENSE](schema/LICENSE)). It isn't the specification itself. For the authoritative definitions see the [GTFS Schedule reference](https://gtfs.org/documentation/schedule/reference/).
 
 Inspired by [Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv).

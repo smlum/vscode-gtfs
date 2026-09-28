@@ -1,8 +1,10 @@
 {
   "name": "vscode-gtfs",
   "displayName": "GTFS",
-  "description": "Read GTFS transit feeds in VS Code: rainbow columns, hovers that explain columns and codes, e.g. route_type 3 → Bus.",
+  "description": "Read GTFS transit feeds in VS Code: rainbow columns, hovers that explain columns and codes (e.g. route_type 3 → Bus), and checks for common mistakes.",
   "version": "0.2.0",
+  "preview": true,
+  "icon": "images/icon.png",
   "publisher": "smlum",
   "license": "MIT",
   "repository": {
@@ -12,7 +14,7 @@
   "engines": {
     "vscode": "^1.90.0"
   },
-  "categories": ["Programming Languages"],
+  "categories": ["Programming Languages", "Linters"],
   "keywords": ["gtfs", "transit", "public transport", "schedule", "csv"],
   "main": "./extension.js",
   "contributes": {
